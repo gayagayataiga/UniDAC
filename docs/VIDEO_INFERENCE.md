@@ -13,7 +13,7 @@
 ### 2. カメラパラメータを Max Lens Mode 用に同梱
 - `demo/demo_video.py` 内に `build_sample_for_frame(image_bgr)` を定義
 - 旧 Wide モード前提の単一フレームヘルパー（後に削除済 `demo_video_frame0.py`、commit 8a3d872 以前を参照）は流用せず別実装
-- 採用値（`demo/grid_search_cam_params.py` の探索結果から選定）:
+- 採用値（`demo/tools/grid_search_cam_params.py` の探索結果から選定）:
   - `k1=-0.20, k2=k3=k4=0`
   - `fl = 230 × (W / 640)` ← 640px幅で校正、入力解像度に応じてスケール（5.3K で fl≈1909）
   - `crop_wFoV=120`
@@ -26,7 +26,7 @@
 - デフォルト `--depth-max` を `3.0` に変更（実出力レンジ 0.25〜2.2m に整合）
 
 ### 4. grid search スクリプトを引数化
-- `demo/grid_search_cam_params.py` の `CONFIG_FILE` ハードコードを `--config-file` で上書き可能に
+- `demo/tools/grid_search_cam_params.py` の `CONFIG_FILE` ハードコードを `--config-file` で上書き可能に
 - `fwd_sz` も config から自動取得
 - 検証出力: `demo/sweeps/sweep_GX010086_lowfly/` （初期 `grid_ep204*` 出力は不要として削除済、commit 58dd941 以前を参照）
 
@@ -159,7 +159,7 @@ GX010012 / GX010086 frame 0 で `(fl_x, fl_y, k1, crop_wFoV)` を 4 段階に分
 - Preset A 出力: `demo/output/new_presetA/`（入力 frame 0 jpg, Preset A/B subplot, mp4 ×2, depth_raw.npz ×2, depth_dmax3.mp4 ×2） — Preset 比較表は `docs/PARAMS.md`
 - Preset B 出力（旧 32 動画）: `demo/output/old32_presetB/`
 - Preset B 出力（新 2 動画、アーカイブ）: `demo/output/new_presetB/`
-- sweep スクリプト: `demo/sweep_GX010012_frame0.py`、各 sweep 出力は `demo/sweeps/{sweep_*,grid_*}/`
+- sweep スクリプト: `demo/tools/sweep_GX010012_frame0.py`、各 sweep 出力は `demo/sweeps/{sweep_*,grid_*}/`
 - 公開 API: `unidac/api.py`、`docs/API.md`
 - npz 読込みサンプル:
   ```python

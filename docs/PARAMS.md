@@ -29,19 +29,19 @@ Filename pattern: `{video}_depth.mp4` (depth_max=8 for Preset A initial run, dep
 Input frame 0 → ERP RGB + depth (depth_max=3 m):
 
 ### GX010085
-![GX010085 input frame 0](GX010085_input_frame0.jpg)
-![GX010085 Preset A](GX010085_preset_A_new.jpg)
+![GX010085 input frame 0](../demo/output/new_presetA/GX010085_input_frame0.jpg)
+![GX010085 Preset A](../demo/output/new_presetA/GX010085_preset_A_new.jpg)
 
 ### GX010086
-![GX010086 input frame 0](GX010086_input_frame0.jpg)
-![GX010086 Preset A](GX010086_preset_A_new.jpg)
+![GX010086 input frame 0](../demo/output/new_presetA/GX010086_input_frame0.jpg)
+![GX010086 Preset A](../demo/output/new_presetA/GX010086_preset_A_new.jpg)
 
 ---
 
 ## Preset B — old params (for comparison)
 
 ### GX010085
-![GX010085 Preset B](GX010085_preset_B_old.jpg)
+![GX010085 Preset B](../demo/output/new_presetA/GX010085_preset_B_old.jpg)
 
 ### GX010086
-![GX010086 Preset B](GX010086_preset_B_old.jpg)
+![GX010086 Preset B](../demo/output/new_presetA/GX010086_preset_B_old.jpg)

@@ -128,7 +128,7 @@ Both presets target a GoPro Hero 11 + Max Lens Mod, but differ on the assumed le
 | `crop_wFoV` | 150 | 120 |
 | `fwd_sz` (from config) | (512, 704) | (704, 704) |
 | config | `configs/test/dac_dinov3l+dpt_indoor_test_scannetpp.json` | `configs/test/dac_dinov3l+dpt_outdoor_test_kitti360.json` |
-| tuned on | `demo/sweeps/sweep_GX010086_lowfly/` (GX010086 frame 0) | `demo/grid_search_cam_params.py` on 640×360 episode_000204 |
+| tuned on | `demo/sweeps/sweep_GX010086_lowfly/` (GX010086 frame 0) | `demo/tools/grid_search_cam_params.py` on 640×360 episode_000204 |
 
 ```python
 pipe = UniDACPipeline(preset="A")    # default
@@ -148,7 +148,7 @@ The numeric values themselves and the sweep trail that led to them are in `docs/
 
 ## 6. What the API does *not* do
 
-- **Calibration**: it does not derive `fl_x/fl_y/k1` from your footage. If the presets are wrong for your camera, calibrate (OpenCV chessboard) or run `demo/sweep_GX010012_frame0.py` against your own video.
+- **Calibration**: it does not derive `fl_x/fl_y/k1` from your footage. If the presets are wrong for your camera, calibrate (OpenCV chessboard) or run `demo/tools/sweep_GX010012_frame0.py` against your own video.
 - **Depth visualization / I/O**: returns NumPy arrays only. Encode/save yourself (`demo/demo_video.py` is the reference).
 - **Backprojection to the input camera**: the returned depth lives in the ERP-cropped frame, not the original fisheye pixel grid. Geometric re-alignment is on the roadmap (see `docs/VIDEO_INFERENCE.md` "Plan B").
 - **Batched / fp16 inference**: each frame goes through the model independently in fp32. For high-throughput needs, wrap the model directly.
