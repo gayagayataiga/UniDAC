@@ -38,7 +38,7 @@ REF_W_NATIVE = 5312.0  # GoPro 5.3K native width; fl values are calibrated at th
 
 
 PRESETS = {
-    # tuned via demo/output_video/sweep_GX010086_lowfly for HyperView + Max Lens
+    # tuned via demo/sweeps/sweep_GX010086_lowfly for HyperView + Max Lens
     "A": dict(
         config="configs/test/dac_dinov3l+dpt_indoor_test_scannetpp.json",
         fl_x_ref=1820.0, fl_y_ref=1275.0,

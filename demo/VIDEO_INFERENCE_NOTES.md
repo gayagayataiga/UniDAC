@@ -28,7 +28,7 @@
 ### 4. grid search スクリプトを引数化
 - `demo/grid_search_cam_params.py` の `CONFIG_FILE` ハードコードを `--config-file` で上書き可能に
 - `fwd_sz` も config から自動取得
-- 検証出力: `demo/output_video/grid_ep204_kitti360_dmax3/grid_crop{120,150}.jpg`
+- 検証出力: `demo/sweeps/grid_ep204_kitti360_dmax3/grid_crop{120,150}.jpg`
 
 ### 5. CLAUDE.md を新規作成
 - リポジトリ構成・eval/demoコマンド・パイプラインの非自明な流れを記載
@@ -38,12 +38,12 @@
 - スモーク 2: 5.3K + Max Lens + kitti360 で通った、深度に幾何構造あり
 - **失敗した本実行 1**: 古いコードを読み込んだプロセス (1番) と新しいコードを読み込んだプロセス (2番) を同時に走らせてしまい、生成 mp4 が混在 → **全削除してやり直し**（下記「失敗と修正」参照）
 - **クリーンな本実行（進行中）**: GPU 0 で `--stride 1 --save-raw --skip-existing` をバックグラウンド起動。約1.5〜2h想定。32本 / 86,694フレーム
-  - ログ: `demo/output_video/_run.log`
-  - 出力: `demo/output_video/<name>_depth.mp4` + `<name>_depth_raw.npz`
+  - ログ: `demo/output/old32_presetB/_run.log`
+  - 出力: `demo/output/old32_presetB/<name>_depth.mp4` + `<name>_depth_raw.npz`
 
 ## 失敗と修正
 
-最初に「進んで」と言われて起動したバックグラウンド run を **kill せずに放置したまま** `demo_video.py` を Max Lens 用に書き換えてしまい、Python は起動時のコードをキャッシュするため、放置されたプロセスは古いコード（scannetpp config + Wide params + depth_max=20）で動き続けた。後から正しいコードでもう1本起動したが、`--skip-existing` で先行プロセスが書いた誤推論 mp4 をスキップしてしまい、結果として `demo/output_video/*_depth.mp4` のほぼ全てが古いパラメータ由来になっていた。
+最初に「進んで」と言われて起動したバックグラウンド run を **kill せずに放置したまま** `demo_video.py` を Max Lens 用に書き換えてしまい、Python は起動時のコードをキャッシュするため、放置されたプロセスは古いコード（scannetpp config + Wide params + depth_max=20）で動き続けた。後から正しいコードでもう1本起動したが、`--skip-existing` で先行プロセスが書いた誤推論 mp4 をスキップしてしまい、結果として `demo/output/old32_presetB/*_depth.mp4` のほぼ全てが古いパラメータ由来になっていた。
 
 修正: 両プロセスを kill → 既存 mp4 と `_run.log` を全削除 → 新コード単一プロセスで `--save-raw` 付きで再実行。
 
@@ -78,12 +78,12 @@ GX010012 / GX010086 frame 0 で `(fl_x, fl_y, k1, crop_wFoV)` を 4 段階に分
 - config: `configs/test/dac_dinov3l+dpt_indoor_test_scannetpp.json`
 - 可視化 `depth_max = 3.0`（実 depth p99 ≈ 2m）
 
-旧パラメータは `Preset B` として保持。詳細比較は **`demo/output_video_new/PARAMS.md`**（subplot 画像埋め込み付き）。
+旧パラメータは `Preset B` として保持。詳細比較は **`demo/output/new_presetA/PARAMS.md`**（subplot 画像埋め込み付き）。
 
 ### 新動画
 - 新撮影: `/home/gayagaya/video/new/{GX010085.MP4, GX010086.MP4}` (2704×1520 @29.97fps、HyperView Max Lens)
-- Preset A 推論結果: `demo/output_video_new/{GX010085, GX010086}_depth.mp4` + `_depth_raw.npz` + `_depth_dmax3.mp4`（再エンコ、depth_max=3）
-- Preset B アーカイブ: `demo/output_video_new_oldparams/`（比較用、両方 integrity OK）
+- Preset A 推論結果: `demo/output/new_presetA/{GX010085, GX010086}_depth.mp4` + `_depth_raw.npz` + `_depth_dmax3.mp4`（再エンコ、depth_max=3）
+- Preset B アーカイブ: `demo/output/new_presetB/`（比較用、両方 integrity OK）
 
 ### 公開 API
 - `unidac/api.py::UniDACPipeline` を追加（Preset A デフォルト、`predict_frame(bgr)` / `predict_video(path)` / `cam_overrides=` 部分上書き対応）
@@ -95,13 +95,47 @@ GX010012 / GX010086 frame 0 で `(fl_x, fl_y, k1, crop_wFoV)` を 4 段階に分
 - [x] ~~クリーン本実行の完了確認（旧 32 動画 Preset B）~~ 完了
 - [x] ~~出力の目視確認 → 歪み判明 → パラメータ刷新~~
 - [x] ~~Preset A 確定~~（`sweep_GX010086_lowfly/sc_k1+0.00_flx1820_fly1275_crop150.jpg`）
-- [x] ~~新動画 Preset A 推論 + 整合性チェック~~（`output_video_new/`、mp4=npz, zero=0%）
-- [x] ~~Preset B 新動画推論 + 整合性~~（`output_video_new_oldparams/`、mp4=npz, zero=5.3%）
-- [ ] **旧 32 動画を Preset A で再推論**（保留中）
-  - 2026-05-13 に一度起動したが、推定 21〜22h かかるためいったん停止
-  - 起動例: `python demo/demo_video.py --video-dir /home/gayagaya/video --out-dir demo/output_video_old32_presetA --stride 1 --save-raw --skip-existing`
-  - 中途半端な出力: `demo/output_video_old32_presetA/`（要整理）
-  - 撮影モード（HyperView か Wide か Linear か）を先に確認できれば Preset 選定の判断材料になる
+- [x] ~~新動画 Preset A 推論 + 整合性チェック~~（`demo/output/new_presetA/`、mp4=npz, zero=0%）
+- [x] ~~Preset B 新動画推論 + 整合性~~（`demo/output/new_presetB/`、mp4=npz, zero=5.3%）
+- [ ] **旧 31 動画を Preset A で再推論**（4-GPU 並列計画あり、起動待ち）
+  - **マシン: dl41**（RTX A6000 ×8、推論時に GPU 0–3 を使う）
+  - 動画実体は 31 本（`/home/gayagaya/video/*.MP4`）、計 86,288 フレーム。doc 上の「32 本/86,694」は実物と微差あり
+  - 単一 GPU: 3.9 fps → 約 6.2h。4 並列: 各 GPU 2–4 fps（CPU/IO 競合で ~25% 減）→ **推定 2.0–2.5h**
+  - 既存の中途半端な出力 `demo/output/old32_presetA/`（旧 21〜22h 推定時の単一 GPU 起動の名残）は事前に rename or rm
+  - 撮影モード（HyperView か Wide か Linear か）を確認できると Preset 選定の判断材料になるが、当面は Preset A 全適用で走らせる方針
+  - シャード（LPT 貪欲法、各 ~21,500 フレーム、不均衡 0.7%）:
+    - `s0` (GPU0, 7 本): GX030039, GX010014, GX010053, GX010007, GX010008, GX010042, GX010001
+    - `s1` (GPU1, 7 本): GX020039, GX010009, GX010017, GX010011, GX010032, GX010037, GX010052
+    - `s2` (GPU2, 7 本): GX010039, GX010010, GX010033, GX010005, GX010040, GX010004, GX010038
+    - `s3` (GPU3, 10 本): GX040039, GX010003, GX010015, GX010034, GX010012, GX010013, GX010006, GX010016, GX010043, GX010041
+  - 起動手順（シャード dir はシンボリックリンクで作成）:
+    ```bash
+    # 1. シャード dir 作成
+    OUT=demo/output/old32_presetA
+    mkdir -p $OUT/shards/s{0,1,2,3}
+    for v in GX030039 GX010014 GX010053 GX010007 GX010008 GX010042 GX010001; do
+      ln -sf /home/gayagaya/video/$v.MP4 $OUT/shards/s0/; done
+    for v in GX020039 GX010009 GX010017 GX010011 GX010032 GX010037 GX010052; do
+      ln -sf /home/gayagaya/video/$v.MP4 $OUT/shards/s1/; done
+    for v in GX010039 GX010010 GX010033 GX010005 GX010040 GX010004 GX010038; do
+      ln -sf /home/gayagaya/video/$v.MP4 $OUT/shards/s2/; done
+    for v in GX040039 GX010003 GX010015 GX010034 GX010012 GX010013 GX010006 GX010016 GX010043 GX010041; do
+      ln -sf /home/gayagaya/video/$v.MP4 $OUT/shards/s3/; done
+
+    # 2. 4 GPU 並列起動（nohup でログアウト耐性つき）
+    source ~/anaconda3/etc/profile.d/conda.sh && conda activate unidac
+    export PYTHONPATH=$PWD
+    for i in 0 1 2 3; do
+      CUDA_VISIBLE_DEVICES=$i nohup python demo/demo_video.py \
+        --video-dir $OUT/shards/s$i --out-dir $OUT/s$i \
+        --stride 1 --save-raw --skip-existing \
+        > $OUT/s$i.log 2>&1 &
+    done
+    ```
+  - Dry-run 結果（2026-05-13, dl41）:
+    - 単一 GPU: GX010052 (79f) を 25.7s → 3.07 fps（モデルロード除けば ~3.9 fps）
+    - 4 並列（GX010052, GX010001, GX010038, GX010032 を別 GPU）: wall 190s、各 GPU 1.86–3.85 fps、出力 mp4 と `_depth_raw.npz` 正常生成
+    - environment OK（unidac env, timm import OK, dl41 GPU 0–4,6 空き）
 
 ### 優先度: 中
 - [ ] **シーン依存の `depth_max` 自動調整**（`--auto-depth-max`）
@@ -122,15 +156,15 @@ GX010012 / GX010086 frame 0 で `(fl_x, fl_y, k1, crop_wFoV)` を 4 段階に分
 - 旧動画 (32 本、5.3K): `/home/gayagaya/video/*.MP4` (5312×2988, 計 86,694 フレーム)
 - 新動画 (HyperView 設定で撮り直し): `/home/gayagaya/video/new/{GX010085, GX010086}.MP4` (2704×1520)
 - リサイズ版: `/home/gayagaya/video/resized/{GX010013.MP4, episode_000204.mp4}` (640×360)
-- Preset A 出力: `demo/output_video_new/`（PARAMS.md, 入力 frame 0 jpg, Preset A/B subplot, mp4 ×2, depth_raw.npz ×2, depth_dmax3.mp4 ×2）
-- Preset B 出力（旧 32 動画）: `demo/output_video/`
-- Preset B 出力（新 2 動画、アーカイブ）: `demo/output_video_new_oldparams/`
-- sweep スクリプト: `demo/sweep_GX010012_frame0.py`、各 sweep 出力は `demo/output_video/sweep_*/`
+- Preset A 出力: `demo/output/new_presetA/`（PARAMS.md, 入力 frame 0 jpg, Preset A/B subplot, mp4 ×2, depth_raw.npz ×2, depth_dmax3.mp4 ×2）
+- Preset B 出力（旧 32 動画）: `demo/output/old32_presetB/`
+- Preset B 出力（新 2 動画、アーカイブ）: `demo/output/new_presetB/`
+- sweep スクリプト: `demo/sweep_GX010012_frame0.py`、各 sweep 出力は `demo/sweeps/{sweep_*,grid_*}/`
 - 公開 API: `unidac/api.py`、`docs/API.md`
 - npz 読込みサンプル:
   ```python
   import numpy as np
-  data = np.load("demo/output_video_new/GX010086_depth_raw.npz")
+  data = np.load("demo/output/new_presetA/GX010086_depth_raw.npz")
   depth_m = data["depth"].astype(np.float32) / data["scale"]  # (T, H, W) meters
   fps = float(data["fps"])
   ```

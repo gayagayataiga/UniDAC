@@ -1,7 +1,7 @@
 """Sweep (config, k1, fl, crop_wFoV) on GX010012 frame 0, one subplot per combo.
 
 Run from /home/gayagaya/UniDAC (or repo root). Outputs:
-  demo/output_video/sweep_GX010012/{cfg}_k1{k1}_fl{REF_FL}_crop{crop}.jpg
+  demo/output/old32_presetB/sweep_GX010012/{cfg}_k1{k1}_fl{REF_FL}_crop{crop}.jpg
 """
 import os
 import os.path as osp
@@ -156,7 +156,7 @@ if __name__ == "__main__":
     p.add_argument("--video", default="/home/gayagaya/video/GX010012.MP4")
     p.add_argument("--frame", type=int, default=0)
     p.add_argument("--model-file", default="checkpoints/unidac.pt")
-    p.add_argument("--out-dir", default="demo/output_video/sweep_GX010012")
+    p.add_argument("--out-dir", default="demo/output/old32_presetB/sweep_GX010012")
     p.add_argument("--depth-max-indoor", type=float, default=8.0)
     p.add_argument("--depth-max-outdoor", type=float, default=20.0)
     p.add_argument("--skip-existing", action="store_true")

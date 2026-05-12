@@ -214,7 +214,7 @@ def main(args):
 if __name__ == "__main__":
     p = argparse.ArgumentParser()
     p.add_argument("--video-dir", default="/home/gayagaya/video")
-    p.add_argument("--out-dir", default="demo/output_video_fast")
+    p.add_argument("--out-dir", default="demo/output/old32_presetB_fast")
     p.add_argument("--model-file", default="checkpoints/unidac.pt")
     p.add_argument("--config-file", default="configs/test/dac_dinov3l+dpt_outdoor_test_kitti360.json")
     p.add_argument("--depth-max", type=float, default=3.0)

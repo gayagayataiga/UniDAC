@@ -18,7 +18,7 @@
 | depth_max (visualization) | 3.0 m | 3.0 m |
 | tuned for | GoPro Hero 11 + Max Lens + **HyperView** (8:7 → 16:9 stretch) | Max Lens isotropic assumption (incorrect for HyperView) |
 | tuned on | `sweep_GX010086_lowfly` (GX010086 frame 0) | `grid_search_cam_params.py` on 640×360 episode_000204 |
-| output dir | `demo/output_video_new/` | `demo/output_video_new_oldparams/` (new videos) / `demo/output_video/` (original 32) |
+| output dir | `demo/output/new_presetA/` | `demo/output/new_presetB/` (new videos) / `demo/output/old32_presetB/` (original 32) |
 
 Filename pattern: `{video}_depth.mp4` (depth_max=8 for Preset A initial run, depth_max=3 for `_depth_dmax3.mp4`) and `{video}_depth_raw.npz` (uint16 millimeters).
 

@@ -24,7 +24,7 @@ def build_sample_for_frame(image_bgr, dataset_name="gopro_maxlens_hyperview"):
 
     HyperView stretches the native 8:7 sensor capture horizontally, so the
     effective lens projection is anisotropic: fl_x > fl_y. Values picked from
-    demo/output_video/sweep_GX010086_lowfly on GX010086 frame 0.
+    demo/sweeps/sweep_GX010086_lowfly on GX010086 frame 0.
     """
     H, W = image_bgr.shape[:2]
     REF_W, REF_FLX, REF_FLY = 5312.0, 1820.0, 1275.0
@@ -174,7 +174,7 @@ def main(args):
 if __name__ == "__main__":
     p = argparse.ArgumentParser()
     p.add_argument("--video-dir", default="/home/gayagaya/video/new")
-    p.add_argument("--out-dir", default="demo/output_video_new")
+    p.add_argument("--out-dir", default="demo/output/new_presetA")
     p.add_argument("--model-file", default="checkpoints/unidac.pt")
     p.add_argument("--config-file", default="configs/test/dac_dinov3l+dpt_indoor_test_scannetpp.json")
     p.add_argument("--depth-max", type=float, default=8.0)

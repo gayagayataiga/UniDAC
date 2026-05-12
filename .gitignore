@@ -24,6 +24,7 @@ ENV/
 *.swp
 *.swo
 .DS_Store
+.claude/
 
 # Jupyter
 .ipynb_checkpoints/
@@ -50,12 +51,17 @@ checkpoints/
 demo/output/
 demo/output_video/
 demo/output_video_*/
-# keep small reference docs/images in output_video_new
-!demo/output_video_new/
-demo/output_video_new/*
-!demo/output_video_new/PARAMS.md
-!demo/output_video_new/*.jpg
-demo/output_video_new/_qc_grid.jpg
+# inference outputs under the new structure: track only small reference assets
+!demo/output/
+demo/output/*
+!demo/output/new_presetA/
+demo/output/new_presetA/*
+!demo/output/new_presetA/PARAMS.md
+!demo/output/new_presetA/*.jpg
+demo/output/new_presetA/_qc_grid.jpg
+# keep all subplot/grid jpgs from parameter sweeps but skip their run logs
+!demo/sweeps/
+demo/sweeps/*_run.log
 outputs/
 *.mp4
 *.npz

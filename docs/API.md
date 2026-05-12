@@ -128,7 +128,7 @@ Both presets target a GoPro Hero 11 + Max Lens Mod, but differ on the assumed le
 | `crop_wFoV` | 150 | 120 |
 | `fwd_sz` (from config) | (512, 704) | (704, 704) |
 | config | `configs/test/dac_dinov3l+dpt_indoor_test_scannetpp.json` | `configs/test/dac_dinov3l+dpt_outdoor_test_kitti360.json` |
-| tuned on | `demo/output_video/sweep_GX010086_lowfly/` (GX010086 frame 0) | `demo/grid_search_cam_params.py` on 640×360 episode_000204 |
+| tuned on | `demo/sweeps/sweep_GX010086_lowfly/` (GX010086 frame 0) | `demo/grid_search_cam_params.py` on 640×360 episode_000204 |
 
 ```python
 pipe = UniDACPipeline(preset="A")    # default
@@ -142,7 +142,7 @@ pipe = UniDACPipeline(
 )
 ```
 
-The numeric values themselves and the sweep trail that led to them are in `demo/VIDEO_INFERENCE_NOTES.md` and `demo/output_video_new/PARAMS.md`.
+The numeric values themselves and the sweep trail that led to them are in `demo/VIDEO_INFERENCE_NOTES.md` and `demo/output/new_presetA/PARAMS.md`.
 
 ---
 

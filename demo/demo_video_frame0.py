@@ -130,7 +130,7 @@ if __name__ == "__main__":
     p = argparse.ArgumentParser()
     p.add_argument("--video-dir", default="/home/gayagaya/video")
     p.add_argument("--model-file", default="checkpoints/unidac.pt")
-    p.add_argument("--out-dir", default="demo/output_video")
+    p.add_argument("--out-dir", default="demo/output/old32_presetB")
     p.add_argument("--limit", type=int, default=1, help="limit number of videos (0 = all)")
     args = p.parse_args()
     main(args)

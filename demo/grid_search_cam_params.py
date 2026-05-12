@@ -135,7 +135,7 @@ if __name__ == "__main__":
     p.add_argument("--video", default="/home/gayagaya/video/resized/episode_000204.mp4")
     p.add_argument("--frame", type=int, default=200)
     p.add_argument("--model-file", default="checkpoints/unidac.pt")
-    p.add_argument("--out-dir", default="demo/output_video/grid_ep204")
+    p.add_argument("--out-dir", default="demo/sweeps/grid_ep204")
     p.add_argument("--depth-max", type=float, default=5.0)
     p.add_argument("--config-file", default=CONFIG_FILE)
     args = p.parse_args()
