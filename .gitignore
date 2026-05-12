@@ -54,9 +54,9 @@ demo/output_video_*/
 # inference outputs under the new structure: track only small reference assets
 !demo/output/
 demo/output/*
+!demo/output/README.md
 !demo/output/new_presetA/
 demo/output/new_presetA/*
-!demo/output/new_presetA/PARAMS.md
 !demo/output/new_presetA/*.jpg
 demo/output/new_presetA/_qc_grid.jpg
 # keep all subplot/grid jpgs from parameter sweeps but skip their run logs
