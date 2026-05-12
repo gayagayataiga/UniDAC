@@ -1,0 +1,607 @@
+{
+  "presets": {
+    "A": {
+      "config": "configs/test/dac_dinov3l+dpt_indoor_test_scannetpp.json",
+      "camera_model": "OPENCV_FISHEYE",
+      "REF_W_NATIVE": 5312,
+      "fl_x_ref": 1820.0,
+      "fl_y_ref": 1275.0,
+      "k1": 0.0,
+      "k2": 0.0,
+      "k3": 0.0,
+      "k4": 0.0,
+      "crop_wFoV": 150,
+      "fwd_sz": [
+        512,
+        704
+      ],
+      "depth_max_vis": 3.0,
+      "notes": "GoPro Hero 11 + Max Lens + HyperView (anisotropic fl). Tuned via sweep_GX010086_lowfly."
+    },
+    "B": {
+      "config": "configs/test/dac_dinov3l+dpt_outdoor_test_kitti360.json",
+      "camera_model": "OPENCV_FISHEYE",
+      "REF_W_NATIVE": 5312,
+      "fl_x_ref": 1909.0,
+      "fl_y_ref": 1909.0,
+      "k1": -0.2,
+      "k2": 0.0,
+      "k3": 0.0,
+      "k4": 0.0,
+      "crop_wFoV": 120,
+      "fwd_sz": [
+        704,
+        704
+      ],
+      "depth_max_vis": 3.0,
+      "notes": "Legacy isotropic Max Lens assumption. Tuned via grid_search_cam_params on 640x360 episode_000204. Incorrect for HyperView."
+    }
+  },
+  "inferences": [
+    {
+      "video": "/home/gayagaya/video/GX010001.MP4",
+      "name": "GX010001",
+      "preset": "B",
+      "output_dir": "demo/output_video",
+      "output_mp4": "demo/output_video/GX010001_depth.mp4",
+      "output_npz": "demo/output_video/GX010001_depth_raw.npz",
+      "npz_frames": 110,
+      "depth_HxW": [
+        704,
+        704
+      ],
+      "fps": 29.970029830932617,
+      "scale_mm_per_m": 1000.0
+    },
+    {
+      "video": "/home/gayagaya/video/GX010003.MP4",
+      "name": "GX010003",
+      "preset": "B",
+      "output_dir": "demo/output_video",
+      "output_mp4": "demo/output_video/GX010003_depth.mp4",
+      "output_npz": "demo/output_video/GX010003_depth_raw.npz",
+      "npz_frames": 2099,
+      "depth_HxW": [
+        704,
+        704
+      ],
+      "fps": 29.970029830932617,
+      "scale_mm_per_m": 1000.0
+    },
+    {
+      "video": "/home/gayagaya/video/GX010004.MP4",
+      "name": "GX010004",
+      "preset": "B",
+      "output_dir": "demo/output_video",
+      "output_mp4": "demo/output_video/GX010004_depth.mp4",
+      "output_npz": "demo/output_video/GX010004_depth_raw.npz",
+      "npz_frames": 214,
+      "depth_HxW": [
+        704,
+        704
+      ],
+      "fps": 29.970029830932617,
+      "scale_mm_per_m": 1000.0
+    },
+    {
+      "video": "/home/gayagaya/video/GX010005.MP4",
+      "name": "GX010005",
+      "preset": "B",
+      "output_dir": "demo/output_video",
+      "output_mp4": "demo/output_video/GX010005_depth.mp4",
+      "output_npz": "demo/output_video/GX010005_depth_raw.npz",
+      "npz_frames": 505,
+      "depth_HxW": [
+        704,
+        704
+      ],
+      "fps": 29.970029830932617,
+      "scale_mm_per_m": 1000.0
+    },
+    {
+      "video": "/home/gayagaya/video/GX010006.MP4",
+      "name": "GX010006",
+      "preset": "B",
+      "output_dir": "demo/output_video",
+      "output_mp4": "demo/output_video/GX010006_depth.mp4",
+      "output_npz": "demo/output_video/GX010006_depth_raw.npz",
+      "npz_frames": 544,
+      "depth_HxW": [
+        704,
+        704
+      ],
+      "fps": 29.970029830932617,
+      "scale_mm_per_m": 1000.0
+    },
+    {
+      "video": "/home/gayagaya/video/GX010007.MP4",
+      "name": "GX010007",
+      "preset": "B",
+      "output_dir": "demo/output_video",
+      "output_mp4": "demo/output_video/GX010007_depth.mp4",
+      "output_npz": "demo/output_video/GX010007_depth_raw.npz",
+      "npz_frames": 475,
+      "depth_HxW": [
+        704,
+        704
+      ],
+      "fps": 29.970029830932617,
+      "scale_mm_per_m": 1000.0
+    },
+    {
+      "video": "/home/gayagaya/video/GX010008.MP4",
+      "name": "GX010008",
+      "preset": "B",
+      "output_dir": "demo/output_video",
+      "output_mp4": "demo/output_video/GX010008_depth.mp4",
+      "output_npz": "demo/output_video/GX010008_depth_raw.npz",
+      "npz_frames": 245,
+      "depth_HxW": [
+        704,
+        704
+      ],
+      "fps": 29.970029830932617,
+      "scale_mm_per_m": 1000.0
+    },
+    {
+      "video": "/home/gayagaya/video/GX010009.MP4",
+      "name": "GX010009",
+      "preset": "B",
+      "output_dir": "demo/output_video",
+      "output_mp4": "demo/output_video/GX010009_depth.mp4",
+      "output_npz": "demo/output_video/GX010009_depth_raw.npz",
+      "npz_frames": 734,
+      "depth_HxW": [
+        704,
+        704
+      ],
+      "fps": 29.970029830932617,
+      "scale_mm_per_m": 1000.0
+    },
+    {
+      "video": "/home/gayagaya/video/GX010010.MP4",
+      "name": "GX010010",
+      "preset": "B",
+      "output_dir": "demo/output_video",
+      "output_mp4": "demo/output_video/GX010010_depth.mp4",
+      "output_npz": "demo/output_video/GX010010_depth_raw.npz",
+      "npz_frames": 683,
+      "depth_HxW": [
+        704,
+        704
+      ],
+      "fps": 29.970029830932617,
+      "scale_mm_per_m": 1000.0
+    },
+    {
+      "video": "/home/gayagaya/video/GX010011.MP4",
+      "name": "GX010011",
+      "preset": "B",
+      "output_dir": "demo/output_video",
+      "output_mp4": "demo/output_video/GX010011_depth.mp4",
+      "output_npz": "demo/output_video/GX010011_depth_raw.npz",
+      "npz_frames": 383,
+      "depth_HxW": [
+        704,
+        704
+      ],
+      "fps": 29.970029830932617,
+      "scale_mm_per_m": 1000.0
+    },
+    {
+      "video": "/home/gayagaya/video/GX010012.MP4",
+      "name": "GX010012",
+      "preset": "B",
+      "output_dir": "demo/output_video",
+      "output_mp4": "demo/output_video/GX010012_depth.mp4",
+      "output_npz": "demo/output_video/GX010012_depth_raw.npz",
+      "npz_frames": 1170,
+      "depth_HxW": [
+        704,
+        704
+      ],
+      "fps": 29.970029830932617,
+      "scale_mm_per_m": 1000.0
+    },
+    {
+      "video": "/home/gayagaya/video/GX010013.MP4",
+      "name": "GX010013",
+      "preset": "B",
+      "output_dir": "demo/output_video",
+      "output_mp4": "demo/output_video/GX010013_depth.mp4",
+      "output_npz": "demo/output_video/GX010013_depth_raw.npz",
+      "npz_frames": 1042,
+      "depth_HxW": [
+        704,
+        704
+      ],
+      "fps": 29.970029830932617,
+      "scale_mm_per_m": 1000.0
+    },
+    {
+      "video": "/home/gayagaya/video/GX010014.MP4",
+      "name": "GX010014",
+      "preset": "B",
+      "output_dir": "demo/output_video",
+      "output_mp4": "demo/output_video/GX010014_depth.mp4",
+      "output_npz": "demo/output_video/GX010014_depth_raw.npz",
+      "npz_frames": 764,
+      "depth_HxW": [
+        704,
+        704
+      ],
+      "fps": 29.970029830932617,
+      "scale_mm_per_m": 1000.0
+    },
+    {
+      "video": "/home/gayagaya/video/GX010015.MP4",
+      "name": "GX010015",
+      "preset": "B",
+      "output_dir": "demo/output_video",
+      "output_mp4": "demo/output_video/GX010015_depth.mp4",
+      "output_npz": "demo/output_video/GX010015_depth_raw.npz",
+      "npz_frames": 1326,
+      "depth_HxW": [
+        704,
+        704
+      ],
+      "fps": 29.970029830932617,
+      "scale_mm_per_m": 1000.0
+    },
+    {
+      "video": "/home/gayagaya/video/GX010016.MP4",
+      "name": "GX010016",
+      "preset": "B",
+      "output_dir": "demo/output_video",
+      "output_mp4": "demo/output_video/GX010016_depth.mp4",
+      "output_npz": "demo/output_video/GX010016_depth_raw.npz",
+      "npz_frames": 476,
+      "depth_HxW": [
+        704,
+        704
+      ],
+      "fps": 29.970029830932617,
+      "scale_mm_per_m": 1000.0
+    },
+    {
+      "video": "/home/gayagaya/video/GX010017.MP4",
+      "name": "GX010017",
+      "preset": "B",
+      "output_dir": "demo/output_video",
+      "output_mp4": "demo/output_video/GX010017_depth.mp4",
+      "output_npz": "demo/output_video/GX010017_depth_raw.npz",
+      "npz_frames": 636,
+      "depth_HxW": [
+        704,
+        704
+      ],
+      "fps": 29.970029830932617,
+      "scale_mm_per_m": 1000.0
+    },
+    {
+      "video": "/home/gayagaya/video/GX010032.MP4",
+      "name": "GX010032",
+      "preset": "B",
+      "output_dir": "demo/output_video",
+      "output_mp4": "demo/output_video/GX010032_depth.mp4",
+      "output_npz": "demo/output_video/GX010032_depth_raw.npz",
+      "npz_frames": 358,
+      "depth_HxW": [
+        704,
+        704
+      ],
+      "fps": 59.940059661865234,
+      "scale_mm_per_m": 1000.0
+    },
+    {
+      "video": "/home/gayagaya/video/GX010033.MP4",
+      "name": "GX010033",
+      "preset": "B",
+      "output_dir": "demo/output_video",
+      "output_mp4": "demo/output_video/GX010033_depth.mp4",
+      "output_npz": "demo/output_video/GX010033_depth_raw.npz",
+      "npz_frames": 641,
+      "depth_HxW": [
+        704,
+        704
+      ],
+      "fps": 59.940059661865234,
+      "scale_mm_per_m": 1000.0
+    },
+    {
+      "video": "/home/gayagaya/video/GX010034.MP4",
+      "name": "GX010034",
+      "preset": "B",
+      "output_dir": "demo/output_video",
+      "output_mp4": "demo/output_video/GX010034_depth.mp4",
+      "output_npz": "demo/output_video/GX010034_depth_raw.npz",
+      "npz_frames": 1191,
+      "depth_HxW": [
+        704,
+        704
+      ],
+      "fps": 29.970029830932617,
+      "scale_mm_per_m": 1000.0
+    },
+    {
+      "video": "/home/gayagaya/video/GX010037.MP4",
+      "name": "GX010037",
+      "preset": "B",
+      "output_dir": "demo/output_video",
+      "output_mp4": "demo/output_video/GX010037_depth.mp4",
+      "output_npz": "demo/output_video/GX010037_depth_raw.npz",
+      "npz_frames": 180,
+      "depth_HxW": [
+        704,
+        704
+      ],
+      "fps": 29.970029830932617,
+      "scale_mm_per_m": 1000.0
+    },
+    {
+      "video": "/home/gayagaya/video/GX010038.MP4",
+      "name": "GX010038",
+      "preset": "B",
+      "output_dir": "demo/output_video",
+      "output_mp4": "demo/output_video/GX010038_depth.mp4",
+      "output_npz": "demo/output_video/GX010038_depth_raw.npz",
+      "npz_frames": 178,
+      "depth_HxW": [
+        704,
+        704
+      ],
+      "fps": 29.970029830932617,
+      "scale_mm_per_m": 1000.0
+    },
+    {
+      "video": "/home/gayagaya/video/GX010039.MP4",
+      "name": "GX010039",
+      "preset": "B",
+      "output_dir": "demo/output_video",
+      "output_mp4": "demo/output_video/GX010039_depth.mp4",
+      "output_npz": "demo/output_video/GX010039_depth_raw.npz",
+      "npz_frames": 19200,
+      "depth_HxW": [
+        704,
+        704
+      ],
+      "fps": 29.970029830932617,
+      "scale_mm_per_m": 1000.0
+    },
+    {
+      "video": "/home/gayagaya/video/GX010040.MP4",
+      "name": "GX010040",
+      "preset": "B",
+      "output_dir": "demo/output_video",
+      "output_mp4": "demo/output_video/GX010040_depth.mp4",
+      "output_npz": "demo/output_video/GX010040_depth_raw.npz",
+      "npz_frames": 218,
+      "depth_HxW": [
+        704,
+        704
+      ],
+      "fps": 29.970029830932617,
+      "scale_mm_per_m": 1000.0
+    },
+    {
+      "video": "/home/gayagaya/video/GX010041.MP4",
+      "name": "GX010041",
+      "preset": "B",
+      "output_dir": "demo/output_video",
+      "output_mp4": "demo/output_video/GX010041_depth.mp4",
+      "output_npz": "demo/output_video/GX010041_depth_raw.npz",
+      "npz_frames": 201,
+      "depth_HxW": [
+        704,
+        704
+      ],
+      "fps": 29.970029830932617,
+      "scale_mm_per_m": 1000.0
+    },
+    {
+      "video": "/home/gayagaya/video/GX010042.MP4",
+      "name": "GX010042",
+      "preset": "B",
+      "output_dir": "demo/output_video",
+      "output_mp4": "demo/output_video/GX010042_depth.mp4",
+      "output_npz": "demo/output_video/GX010042_depth_raw.npz",
+      "npz_frames": 209,
+      "depth_HxW": [
+        704,
+        704
+      ],
+      "fps": 29.970029830932617,
+      "scale_mm_per_m": 1000.0
+    },
+    {
+      "video": "/home/gayagaya/video/GX010043.MP4",
+      "name": "GX010043",
+      "preset": "B",
+      "output_dir": "demo/output_video",
+      "output_mp4": "demo/output_video/GX010043_depth.mp4",
+      "output_npz": "demo/output_video/GX010043_depth_raw.npz",
+      "npz_frames": 290,
+      "depth_HxW": [
+        704,
+        704
+      ],
+      "fps": 29.970029830932617,
+      "scale_mm_per_m": 1000.0
+    },
+    {
+      "video": "/home/gayagaya/video/GX010052.MP4",
+      "name": "GX010052",
+      "preset": "B",
+      "output_dir": "demo/output_video",
+      "output_mp4": "demo/output_video/GX010052_depth.mp4",
+      "output_npz": "demo/output_video/GX010052_depth_raw.npz",
+      "npz_frames": 79,
+      "depth_HxW": [
+        704,
+        704
+      ],
+      "fps": 29.970029830932617,
+      "scale_mm_per_m": 1000.0
+    },
+    {
+      "video": "/home/gayagaya/video/GX010053.MP4",
+      "name": "GX010053",
+      "preset": "B",
+      "output_dir": "demo/output_video",
+      "output_mp4": "demo/output_video/GX010053_depth.mp4",
+      "output_npz": "demo/output_video/GX010053_depth_raw.npz",
+      "npz_frames": 580,
+      "depth_HxW": [
+        704,
+        704
+      ],
+      "fps": 29.970029830932617,
+      "scale_mm_per_m": 1000.0
+    },
+    {
+      "video": "/home/gayagaya/video/GX020039.MP4",
+      "name": "GX020039",
+      "preset": "B",
+      "output_dir": "demo/output_video",
+      "output_mp4": "demo/output_video/GX020039_depth.mp4",
+      "output_npz": "demo/output_video/GX020039_depth_raw.npz",
+      "npz_frames": 19200,
+      "depth_HxW": [
+        704,
+        704
+      ],
+      "fps": 29.970029830932617,
+      "scale_mm_per_m": 1000.0
+    },
+    {
+      "video": "/home/gayagaya/video/GX030039.MP4",
+      "name": "GX030039",
+      "preset": "B",
+      "output_dir": "demo/output_video",
+      "output_mp4": "demo/output_video/GX030039_depth.mp4",
+      "output_npz": "demo/output_video/GX030039_depth_raw.npz",
+      "npz_frames": 19200,
+      "depth_HxW": [
+        704,
+        704
+      ],
+      "fps": 29.970029830932617,
+      "scale_mm_per_m": 1000.0
+    },
+    {
+      "video": "/home/gayagaya/video/GX040039.MP4",
+      "name": "GX040039",
+      "preset": "B",
+      "output_dir": "demo/output_video",
+      "output_mp4": "demo/output_video/GX040039_depth.mp4",
+      "output_npz": "demo/output_video/GX040039_depth_raw.npz",
+      "npz_frames": 13157,
+      "depth_HxW": [
+        704,
+        704
+      ],
+      "fps": 29.970029830932617,
+      "scale_mm_per_m": 1000.0
+    },
+    {
+      "video": "/home/gayagaya/video/episode_000204.mp4",
+      "name": "episode_000204",
+      "preset": "B",
+      "output_dir": "demo/output_video",
+      "output_mp4": "demo/output_video/episode_000204_depth.mp4",
+      "output_npz": "demo/output_video/episode_000204_depth_raw.npz",
+      "npz_frames": 406,
+      "depth_HxW": [
+        704,
+        704
+      ],
+      "fps": 30.0,
+      "scale_mm_per_m": 1000.0
+    },
+    {
+      "video": "/home/gayagaya/video/new/GX010085.MP4",
+      "name": "GX010085",
+      "preset": "A",
+      "output_dir": "demo/output_video_new",
+      "output_mp4": "demo/output_video_new/GX010085_depth.mp4",
+      "output_npz": "demo/output_video_new/GX010085_depth_raw.npz",
+      "npz_frames": 1397,
+      "depth_HxW": [
+        512,
+        704
+      ],
+      "fps": 29.970029830932617,
+      "scale_mm_per_m": 1000.0
+    },
+    {
+      "video": "/home/gayagaya/video/new/GX010086.MP4",
+      "name": "GX010086",
+      "preset": "A",
+      "output_dir": "demo/output_video_new",
+      "output_mp4": "demo/output_video_new/GX010086_depth.mp4",
+      "output_npz": "demo/output_video_new/GX010086_depth_raw.npz",
+      "npz_frames": 1630,
+      "depth_HxW": [
+        512,
+        704
+      ],
+      "fps": 29.970029830932617,
+      "scale_mm_per_m": 1000.0
+    },
+    {
+      "video": "/home/gayagaya/video/new/GX010085.MP4",
+      "name": "GX010085",
+      "preset": "B",
+      "output_dir": "demo/output_video_new_oldparams",
+      "output_mp4": "demo/output_video_new_oldparams/GX010085_depth.mp4",
+      "output_npz": "demo/output_video_new_oldparams/GX010085_depth_raw.npz",
+      "npz_frames": 1397,
+      "depth_HxW": [
+        704,
+        704
+      ],
+      "fps": 29.970029830932617,
+      "scale_mm_per_m": 1000.0
+    },
+    {
+      "video": "/home/gayagaya/video/new/GX010086.MP4",
+      "name": "GX010086",
+      "preset": "B",
+      "output_dir": "demo/output_video_new_oldparams",
+      "output_mp4": "demo/output_video_new_oldparams/GX010086_depth.mp4",
+      "output_npz": "demo/output_video_new_oldparams/GX010086_depth_raw.npz",
+      "npz_frames": 1630,
+      "depth_HxW": [
+        704,
+        704
+      ],
+      "fps": 29.970029830932617,
+      "scale_mm_per_m": 1000.0
+    },
+    {
+      "video": "/home/gayagaya/video/GX010001.MP4",
+      "name": "GX010001",
+      "preset": "A",
+      "output_dir": "demo/output_video_old32_presetA",
+      "output_mp4": "demo/output_video_old32_presetA/GX010001_depth.mp4",
+      "output_npz": "demo/output_video_old32_presetA/GX010001_depth_raw.npz",
+      "npz_frames": 110,
+      "depth_HxW": [
+        512,
+        704
+      ],
+      "fps": 29.970029830932617,
+      "scale_mm_per_m": 1000.0
+    },
+    {
+      "video": "/home/gayagaya/video/GX010003.MP4",
+      "name": "GX010003",
+      "preset": "A",
+      "output_dir": "demo/output_video_old32_presetA",
+      "output_mp4": "demo/output_video_old32_presetA/GX010003_depth.mp4",
+      "output_npz": null
+    }
+  ],
+  "generated": "2026-05-13",
+  "note": "Auto-generated; in_progress entries (e.g., output_video_old32_presetA) update as new files appear."
+}

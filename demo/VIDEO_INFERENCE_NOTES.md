@@ -97,7 +97,11 @@ GX010012 / GX010086 frame 0 で `(fl_x, fl_y, k1, crop_wFoV)` を 4 段階に分
 - [x] ~~Preset A 確定~~（`sweep_GX010086_lowfly/sc_k1+0.00_flx1820_fly1275_crop150.jpg`）
 - [x] ~~新動画 Preset A 推論 + 整合性チェック~~（`output_video_new/`、mp4=npz, zero=0%）
 - [x] ~~Preset B 新動画推論 + 整合性~~（`output_video_new_oldparams/`、mp4=npz, zero=5.3%）
-- [ ] 旧 32 動画について、HyperView 撮影だったか確認 → そうなら Preset A で再推論を検討
+- [ ] **旧 32 動画を Preset A で再推論**（保留中）
+  - 2026-05-13 に一度起動したが、推定 21〜22h かかるためいったん停止
+  - 起動例: `python demo/demo_video.py --video-dir /home/gayagaya/video --out-dir demo/output_video_old32_presetA --stride 1 --save-raw --skip-existing`
+  - 中途半端な出力: `demo/output_video_old32_presetA/`（要整理）
+  - 撮影モード（HyperView か Wide か Linear か）を先に確認できれば Preset 選定の判断材料になる
 
 ### 優先度: 中
 - [ ] **シーン依存の `depth_max` 自動調整**（`--auto-depth-max`）
