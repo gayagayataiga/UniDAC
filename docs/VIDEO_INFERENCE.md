@@ -12,7 +12,7 @@
 
 ### 2. カメラパラメータを Max Lens Mode 用に同梱
 - `demo/demo_video.py` 内に `build_sample_for_frame(image_bgr)` を定義
-- 旧 `demo_video_frame0.py` の Wide モード前提のヘルパーは流用せず別実装
+- 旧 Wide モード前提の単一フレームヘルパー（後に削除済 `demo_video_frame0.py`、commit 8a3d872 以前を参照）は流用せず別実装
 - 採用値（`demo/grid_search_cam_params.py` の探索結果から選定）:
   - `k1=-0.20, k2=k3=k4=0`
   - `fl = 230 × (W / 640)` ← 640px幅で校正、入力解像度に応じてスケール（5.3K で fl≈1909）
@@ -28,7 +28,7 @@
 ### 4. grid search スクリプトを引数化
 - `demo/grid_search_cam_params.py` の `CONFIG_FILE` ハードコードを `--config-file` で上書き可能に
 - `fwd_sz` も config から自動取得
-- 検証出力: `demo/sweeps/grid_ep204_kitti360_dmax3/grid_crop{120,150}.jpg`
+- 検証出力: `demo/sweeps/sweep_GX010086_lowfly/` （初期 `grid_ep204*` 出力は不要として削除済、commit 58dd941 以前を参照）
 
 ### 5. CLAUDE.md を新規作成
 - リポジトリ構成・eval/demoコマンド・パイプラインの非自明な流れを記載
@@ -78,7 +78,7 @@ GX010012 / GX010086 frame 0 で `(fl_x, fl_y, k1, crop_wFoV)` を 4 段階に分
 - config: `configs/test/dac_dinov3l+dpt_indoor_test_scannetpp.json`
 - 可視化 `depth_max = 3.0`（実 depth p99 ≈ 2m）
 
-旧パラメータは `Preset B` として保持。詳細比較は **`demo/output/new_presetA/PARAMS.md`**（subplot 画像埋め込み付き）。
+旧パラメータは `Preset B` として保持。詳細比較は **`docs/PARAMS.md`**（subplot 画像埋め込み付き）。
 
 ### 新動画
 - 新撮影: `/home/gayagaya/video/new/{GX010085.MP4, GX010086.MP4}` (2704×1520 @29.97fps、HyperView Max Lens)
@@ -156,7 +156,7 @@ GX010012 / GX010086 frame 0 で `(fl_x, fl_y, k1, crop_wFoV)` を 4 段階に分
 - 旧動画 (32 本、5.3K): `/home/gayagaya/video/*.MP4` (5312×2988, 計 86,694 フレーム)
 - 新動画 (HyperView 設定で撮り直し): `/home/gayagaya/video/new/{GX010085, GX010086}.MP4` (2704×1520)
 - リサイズ版: `/home/gayagaya/video/resized/{GX010013.MP4, episode_000204.mp4}` (640×360)
-- Preset A 出力: `demo/output/new_presetA/`（PARAMS.md, 入力 frame 0 jpg, Preset A/B subplot, mp4 ×2, depth_raw.npz ×2, depth_dmax3.mp4 ×2）
+- Preset A 出力: `demo/output/new_presetA/`（入力 frame 0 jpg, Preset A/B subplot, mp4 ×2, depth_raw.npz ×2, depth_dmax3.mp4 ×2） — Preset 比較表は `docs/PARAMS.md`
 - Preset B 出力（旧 32 動画）: `demo/output/old32_presetB/`
 - Preset B 出力（新 2 動画、アーカイブ）: `demo/output/new_presetB/`
 - sweep スクリプト: `demo/sweep_GX010012_frame0.py`、各 sweep 出力は `demo/sweeps/{sweep_*,grid_*}/`

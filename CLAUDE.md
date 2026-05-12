@@ -35,8 +35,8 @@ Add `--vis` to `scripts/test.py` to dump visualizations; `--out-dir` controls th
 
 ```bash
 python demo/demo_unidac.py --model-file checkpoints/unidac.pt
-python demo/demo_video_frame0.py        # single-frame variant
 python demo/grid_search_cam_params.py   # sweeps cam params when intrinsics are unknown
+python demo/sweep_GX010012_frame0.py    # finer-grained single-frame sweep used to lock Preset A
 ```
 
 There is **no training script, no test suite, and no linter** in this repo. The README mentions `demo.sh` and `bash demo.sh` but no such file exists — run the Python demo scripts directly.
