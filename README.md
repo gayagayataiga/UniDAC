@@ -146,7 +146,7 @@ bash demo.sh
 
 ## Python API
 
-For programmatic use (single image or full video → metric depth as a NumPy array), see [`docs/API.md`](docs/API.md). Minimal example:
+For programmatic use (single image or full video → metric depth as a NumPy array), see [`docs/API.md`](docs/API.md). All custom documentation lives under [`docs/`](docs/README.md) (API, parameter presets, build log, inference manifest). Minimal example:
 
 ```python
 from unidac.api import UniDACPipeline

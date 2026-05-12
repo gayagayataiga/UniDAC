@@ -142,7 +142,7 @@ pipe = UniDACPipeline(
 )
 ```
 
-The numeric values themselves and the sweep trail that led to them are in `demo/VIDEO_INFERENCE_NOTES.md` and `demo/output/new_presetA/PARAMS.md`.
+The numeric values themselves and the sweep trail that led to them are in `docs/VIDEO_INFERENCE.md` and `docs/PARAMS.md`.
 
 ---
 
@@ -150,7 +150,7 @@ The numeric values themselves and the sweep trail that led to them are in `demo/
 
 - **Calibration**: it does not derive `fl_x/fl_y/k1` from your footage. If the presets are wrong for your camera, calibrate (OpenCV chessboard) or run `demo/sweep_GX010012_frame0.py` against your own video.
 - **Depth visualization / I/O**: returns NumPy arrays only. Encode/save yourself (`demo/demo_video.py` is the reference).
-- **Backprojection to the input camera**: the returned depth lives in the ERP-cropped frame, not the original fisheye pixel grid. Geometric re-alignment is on the roadmap (see `demo/VIDEO_INFERENCE_NOTES.md` "Plan B").
+- **Backprojection to the input camera**: the returned depth lives in the ERP-cropped frame, not the original fisheye pixel grid. Geometric re-alignment is on the roadmap (see `docs/VIDEO_INFERENCE.md` "Plan B").
 - **Batched / fp16 inference**: each frame goes through the model independently in fp32. For high-throughput needs, wrap the model directly.
 
 ---
