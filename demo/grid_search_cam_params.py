@@ -35,7 +35,7 @@ def build_cam_params(W, H, fl, k1, dataset_name="ep204_grid"):
     }
 
 
-def infer_one(model, device, image_bgr, cam_params, crop_wfov, cano_sz, fwd_sz=(512, 704)):
+def infer_one(model, device, image_bgr, cam_params, crop_wfov, cano_sz, fwd_sz):
     image = cv2.cvtColor(image_bgr, cv2.COLOR_BGR2RGB)
     H, W = image.shape[:2]
     depth = np.zeros((H, W), dtype=np.float32)
@@ -81,12 +81,13 @@ def infer_one(model, device, image_bgr, cam_params, crop_wfov, cano_sz, fwd_sz=(
 def main(args):
     device = torch.device("cuda")
 
-    with open(CONFIG_FILE) as f:
+    with open(args.config_file) as f:
         config = json.load(f)
     model = UniDAC.build(config)
     model.load_pretrained(args.model_file)
     model = model.to(device).eval()
     cano_sz = config["data"]["cano_sz"]
+    fwd_sz = tuple(config["data"]["fwd_sz"])
 
     cap = cv2.VideoCapture(args.video)
     cap.set(cv2.CAP_PROP_POS_FRAMES, args.frame)
@@ -111,7 +112,7 @@ def main(args):
         for i, k1 in enumerate(k1_list):
             for j, fl in enumerate(fl_list):
                 cam = build_cam_params(W, H, fl, k1)
-                rgb_disp, pred, mask = infer_one(model, device, frame, cam, crop, cano_sz)
+                rgb_disp, pred, mask = infer_one(model, device, frame, cam, crop, cano_sz, fwd_sz)
                 # show ERP rgb with depth overlay-style: side-by-side in same cell via hstack
                 pred_vis = cmap_depth(np.clip(pred / depth_max, 0, 1))[..., :3]
                 pred_vis = (pred_vis * 255).astype(np.uint8)
@@ -136,5 +137,6 @@ if __name__ == "__main__":
     p.add_argument("--model-file", default="checkpoints/unidac.pt")
     p.add_argument("--out-dir", default="demo/output_video/grid_ep204")
     p.add_argument("--depth-max", type=float, default=5.0)
+    p.add_argument("--config-file", default=CONFIG_FILE)
     args = p.parse_args()
     main(args)

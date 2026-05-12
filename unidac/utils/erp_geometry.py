@@ -641,3 +641,134 @@ def fisheye_kb_to_erp(fisheye_image, camera_params, output_size=(1400, 1400), de
         erp_depth = cv2.remap(depth_map, u_d, v_d, interpolation=cv2.INTER_NEAREST, borderMode=cv2.BORDER_CONSTANT, borderValue=0)
         return erp_img, erp_depth, active_mask
     return erp_img, active_mask
+
+
+def make_cam_to_erp_grid(img_h, img_w, theta, phi, patch_h, patch_w,
+                         erp_h, erp_w, cam_params, roll=None, scale_fac=None):
+    """Frame-invariant part of cam_to_erp_patch_fast.
+
+    Computes the (new_grid, mask_active, lat_grid, lon_grid) tensors that depend
+    only on geometry (camera intrinsics, output patch shape, viewing direction),
+    not on the actual image content. Designed to be called once per video; the
+    returned tensors are then reused every frame via apply_cam_to_erp_grid.
+
+    Returns:
+        new_grid:    (1, patch_h, patch_w, 2) torch.float32 — for F.grid_sample
+        mask_active: (1, 1, patch_h, patch_w) torch.float32 — 0/1 valid mask in ERP space
+        lat_grid:    (patch_h, patch_w) np.float32
+        lon_grid:    (patch_h, patch_w) np.float32
+
+    The math is byte-identical to cam_to_erp_patch_fast's lines computing new_grid
+    and mask_active, so feeding the returned tensors back through F.grid_sample
+    reproduces the original function's output bit-exactly.
+    """
+    PI = math.pi
+    PI_2 = math.pi * 0.5
+    PI2 = math.pi * 2
+    wFOV_tgt = patch_w / erp_w * PI2
+    hFOV_tgt = patch_h / erp_h * PI
+
+    cp = torch.tensor([theta, phi]).view(1, 1, -1)
+    lat_grid, lon_grid = torch.meshgrid(
+        torch.linspace(phi - hFOV_tgt/2, phi + hFOV_tgt/2, patch_h),
+        torch.linspace(theta - wFOV_tgt/2, theta + wFOV_tgt/2, patch_w))
+    lon_grid = lon_grid.float().reshape(1, -1)
+    lat_grid = lat_grid.float().reshape(1, -1)
+
+    cos_c = torch.sin(cp[..., 1]) * torch.sin(lat_grid) + torch.cos(cp[..., 1]) * torch.cos(lat_grid) * torch.cos(
+        lon_grid - cp[..., 0])
+    x_num = (torch.cos(lat_grid) * torch.sin(lon_grid - cp[..., 0]))
+    y_num = (torch.cos(cp[..., 1]) * torch.sin(lat_grid) - torch.sin(cp[..., 1]) * torch.cos(lat_grid) * torch.cos(
+        lon_grid - cp[..., 0]))
+    new_x = x_num / cos_c
+    new_y = y_num / cos_c
+
+    if roll is not None:
+        roll_t = torch.tensor(roll, dtype=torch.float32)
+        new_x_tmp = new_x * torch.cos(roll_t) - new_y * torch.sin(roll_t)
+        new_y_tmp = new_x * torch.sin(roll_t) + new_y * torch.cos(roll_t)
+        new_x = new_x_tmp
+        new_y = new_y_tmp
+
+    if scale_fac is not None:
+        new_x = new_x * scale_fac
+        new_y = new_y * scale_fac
+
+    if 'camera_model' in cam_params.keys() and cam_params['camera_model'] == 'OPENCV_FISHEYE':
+        k1 = cam_params['k1']; k2 = cam_params['k2']; k3 = cam_params['k3']; k4 = cam_params['k4']
+        fx = cam_params['fl_x']; fy = cam_params['fl_y']
+        cx = cam_params['cx'];   cy = cam_params['cy']
+        r = np.sqrt(x_num*x_num + y_num*y_num)
+        theta_dist = np.arccos(cos_c)
+        theta_d = theta_dist * (1 + k1*theta_dist*theta_dist + k2*theta_dist**4 + k3*theta_dist**6 + k4*theta_dist**8)
+        x_d = theta_d * x_num / (r)
+        y_d = theta_d * y_num / (r)
+        new_x = fx * x_d + cx
+        new_y = fy * y_d + cy
+        new_x = new_x - img_w/2
+        new_x = new_x / (img_w/2)
+        new_y = new_y - img_h/2
+        new_y = new_y / (img_h/2)
+    elif 'camera_model' in cam_params.keys() and cam_params['camera_model'] == 'MEI':
+        xi = cam_params['xi']
+        k1 = cam_params['k1']; k2 = cam_params['k2']
+        p1 = cam_params['p1']; p2 = cam_params['p2']
+        fx = cam_params['fx']; fy = cam_params['fy']
+        cx = cam_params['cx']; cy = cam_params['cy']
+        p_u = x_num / (cos_c + xi)
+        p_v = y_num / (cos_c + xi)
+        ro2 = p_u*p_u + p_v*p_v
+        p_u = p_u * (1 + k1*ro2 + k2*ro2*ro2)
+        p_v = p_v * (1 + k1*ro2 + k2*ro2*ro2)
+        p_u = p_u + 2*p1*p_u*p_v + p2*(ro2 + 2*p_u*p_u)
+        p_v = p_v + p1*(ro2 + 2*p_v*p_v) + 2*p2*p_u*p_v
+        new_x = fx*p_u + cx
+        new_y = fy*p_v + cy
+        new_x = new_x - img_w/2
+        new_x = new_x / (img_w/2)
+        new_y = new_y - img_h/2
+        new_y = new_y / (img_h/2)
+    else:
+        if 'cx' in cam_params.keys():
+            new_x = cam_params['fx'] * new_x + cam_params['cx']
+            new_y = cam_params['fy'] * new_y + cam_params['cy']
+            new_x = new_x - img_w/2
+            new_x = new_x / (img_w/2)
+            new_y = new_y - img_h/2
+            new_y = new_y / (img_h/2)
+        else:
+            new_x = new_x / np.tan(cam_params['wFOV'] / 2)
+            new_y = new_y / np.tan(cam_params['hFOV'] / 2)
+
+    new_x = new_x.reshape(1, patch_h, patch_w)
+    new_y = new_y.reshape(1, patch_h, patch_w)
+    new_grid = torch.stack([new_x, new_y], -1)
+
+    mask_active = torch.logical_and(
+        torch.logical_and(new_x > -1, new_x < 1),
+        torch.logical_and(new_y > -1, new_y < 1),
+    ) * 1.0
+    mask_active = mask_active.unsqueeze(0)  # (1, 1, patch_h, patch_w)
+
+    lat_grid_np = lat_grid.reshape(patch_h, patch_w).numpy().astype(np.float32)
+    lon_grid_np = lon_grid.reshape(patch_h, patch_w).numpy().astype(np.float32)
+
+    return new_grid, mask_active, lat_grid_np, lon_grid_np
+
+
+def apply_cam_to_erp_grid(img_tensor, new_grid, mask_active):
+    """Frame-variant part: just runs F.grid_sample with the cached grid.
+
+    All inputs are on the same device. Stays on device (no CPU roundtrip).
+
+    Args:
+        img_tensor:  (1, 3, img_h, img_w) torch.float32 — perspective frame
+        new_grid:    from make_cam_to_erp_grid
+        mask_active: from make_cam_to_erp_grid
+    Returns:
+        erp_img:     (1, 3, patch_h, patch_w) torch.float32, masked
+    """
+    erp_img = F.grid_sample(img_tensor, new_grid, mode='bilinear',
+                            padding_mode='border', align_corners=True)
+    erp_img = erp_img * mask_active
+    return erp_img

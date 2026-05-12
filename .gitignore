@@ -49,7 +49,16 @@ lightning_logs/
 checkpoints/
 demo/output/
 demo/output_video/
+demo/output_video_*/
+# keep small reference docs/images in output_video_new
+!demo/output_video_new/
+demo/output_video_new/*
+!demo/output_video_new/PARAMS.md
+!demo/output_video_new/*.jpg
+demo/output_video_new/_qc_grid.jpg
 outputs/
+*.mp4
+*.npz
 *.ckpt
 *.pth
 *.pt

@@ -144,6 +144,18 @@ You can then run the demo script by running the following command and the visual
 bash demo.sh
 ```
 
+## Python API
+
+For programmatic use (single image or full video → metric depth as a NumPy array), see [`docs/API.md`](docs/API.md). Minimal example:
+
+```python
+from unidac.api import UniDACPipeline
+
+pipe = UniDACPipeline()                     # loads Preset A (GoPro Max Lens + HyperView)
+depth = pipe.predict_frame(bgr_image)       # (H_out, W_out) float32 meters
+result = pipe.predict_video("clip.mp4")     # result.depth (T, H_out, W_out), result.fps
+```
+
 ## Testing
 
 Download the checkpoint from <a href='https://huggingface.co/girish1511/UniDAC'><img src='https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Models-yellow'></a> and place in `checkpoints/`.
