@@ -136,6 +136,40 @@ GX010012 / GX010086 frame 0 で `(fl_x, fl_y, k1, crop_wFoV)` を 4 段階に分
     - 単一 GPU: GX010052 (79f) を 25.7s → 3.07 fps（モデルロード除けば ~3.9 fps）
     - 4 並列（GX010052, GX010001, GX010038, GX010032 を別 GPU）: wall 190s、各 GPU 1.86–3.85 fps、出力 mp4 と `_depth_raw.npz` 正常生成
     - environment OK（unidac env, timm import OK, dl41 GPU 0–4,6 空き）
+  - **本実行結果（2026-05-13 01:08 開始, dl41, GPU 0–3）**:
+    - 30 分時点の実 fps: 各 GPU **1.0–1.33 fps**（dry-run 予想 3 fps の **~1/2**）
+    - 合計スループット ~4.7 fps、ETA は最遅シャード s3 律速で **開始から ~5.9h（約 7:00 終了見込み）**
+    - 想定外要因: GPU 5,7 が他ユーザーで 100% 稼働 → PCIe/CPU 競合、4 並列 npz 書き込みでディスク I/O 競合、dry-run の短動画では steady-state を測れていなかった
+    - PID: 693365–693368, ログ: `demo/output/old32_presetA/s{0,1,2,3}.log`
+
+  - **次回への改善案**（今回はこのまま流す。次回以降の高速化候補、効果の大きい順）:
+    1. **動画内フレーム並列**（intra-video sharding）— 最大効果
+       - 現状: 1動画 = 1 GPU 固定。最長動画 (GX030039 = 19200f) が ~5h で律速
+       - 改修: `demo_video.py` に `--frame-range A:B` を追加、`cv2.VideoCapture.set(cv2.CAP_PROP_POS_FRAMES, A)` で開始位置指定、`A〜B-1` のみ処理して `<name>_part{N}.npz` を吐く。後段で `np.concatenate` + ffmpeg `concat` で結合
+       - これで 8 GPU 全活用、19200f を ~2400f×8 に分割 → 最長 ~30 分、全体 **~45 分**に短縮可能
+       - リスク: GoPro mp4 の seek 精度（HEVC GOP 境界で off-by-N の可能性）。事前に 1 動画でフレーム数一致を検証すること
+    2. **fp16 / autocast** — 中効果
+       - `unidac/models/unidac.py::UniDAC.forward` を `with torch.autocast("cuda", dtype=torch.float16):` で包む
+       - A6000 で 1.5–2× のスループット改善見込み、メモリも半減
+       - 検証: 既存 Preset A 出力との depth 差分を rms で確認（< 1% なら採用）
+    3. **ERP warp の前計算キャッシュ** — 中効果
+       - `unidac/utils/erp_geometry.py::cam_to_erp_patch_fast` は同じ (W, H, cam_params) なら毎フレーム同じ座標変換テーブルを作っている
+       - 初回に `map_x, map_y` を計算してキャッシュ、以降は `cv2.remap(frame, map_x, map_y, ...)` 1 発に
+       - 推定効果: CPU 側 warp 時間を 50–80% 削減 → 現状 ~1 fps が ~1.5 fps に
+    4. **batching**（複数フレーム同時 forward） — 中効果、改修コスト中
+       - 現状 batch=1。`fwd_sz=704×704` × fp32 で 1 frame ≈ 8MB activation、A6000 48GB なら batch=8〜16 が乗る
+       - dataloader 化 (PyTorch `DataLoader`, num_workers=4) → frame prefetch + GPU batch forward
+       - 効果は GPU 飽和度次第で 2–3×
+    5. **書き込み I/O 軽減** — 小効果
+       - 現状: フレームごとに `numpy.append` 的に in-memory 蓄積、終端でまとめて `np.savez_compressed` 相当（要確認）
+       - 4 並列で `_depth_raw.npz` が同時に GB 級書き込み → ディスク I/O 競合の主犯候補
+       - 案: シャード dir を別ボリュームに散らす、または非圧縮 `.npy` ストリーム書き
+    6. **GPU 5,7 が空く時間帯を狙う**
+       - 単純だが効果大: 他ユーザー競合が無いと dry-run 通りの ~3 fps が出る可能性
+       - `nvidia-smi pmon -c 1` で監視 → 全 GPU idle のタイミングで起動
+    7. **`--stride 2` で半フレーム間引き**
+       - 30fps 撮影なので 15fps で十分なシーンが多い。フレーム数半減 = 時間半減
+       - ただし downstream（動き解析等）の要件次第
 
 ### 優先度: 中
 - [ ] **シーン依存の `depth_max` 自動調整**（`--auto-depth-max`）
